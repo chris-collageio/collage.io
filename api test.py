@@ -1,7 +1,7 @@
 import requests
 
 headers = {
-    'Authorization': 'Bearer pina_AMASQQQXAADXQBAAGBAM4DIV7XSLDFYBQBIQDMT6EUAPLY2LCPIWUULOZGQS56T4FQANB7G3YIFIOC44HDPZT4ORMHDXO5IA',
+    'Authorization': 'Bearer <YOUR_ACCESS_TOKEN>',
     'Content-Type': 'application/json',
     'Accept': 'application/json',
 }
