@@ -46,3 +46,17 @@
 .pinterest-button {
   float: right;
 }
+
+.privacy-policy-link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1em;
+}
+.privacy-policy-link a{
+  color: #41403e;
+  /* text-decoration: none; */
+  font-size: 1.1rem;
+  font-family: Neucha, sans-serif;
+  padding-top: 1.5em;
+}

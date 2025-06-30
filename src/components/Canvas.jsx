@@ -421,7 +421,8 @@ export default function Canvas() {
           ))}
         </div>
       </div>
-      <div>
+      
+      <div className='privacy-policy-link'>
         <Link to="/privacy-policy">Privacy Policy</Link>
       </div>
     </>
