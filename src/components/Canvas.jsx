@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, RotateCw, Trash2, ZoomIn, ZoomOut } from 'lucide-react';
 
 export default function Canvas() {
@@ -419,6 +420,9 @@ export default function Canvas() {
             </div>
           ))}
         </div>
+      </div>
+      <div>
+        <Link to="/privacy-policy">Privacy Policy</Link>
       </div>
     </>
   );
