@@ -2,11 +2,10 @@ require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
-
 const app = express();
+
 app.use(cors({
-  origin: "https://collageio.web.app",
-  credentials: true
+  origin: "https://collageio.web.app"
 }));
 app.use(express.json());
 
