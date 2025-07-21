@@ -7,7 +7,8 @@ const app = express();
 app.use(cors({
   origin: "https://collageio.web.app",
   credentials: true
-}));app.use(express.json());
+}));
+app.use(express.json());
 
 const PORT = 3000;
 
