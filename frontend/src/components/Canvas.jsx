@@ -115,9 +115,10 @@ export default function Canvas() {
     if (!code || localStorage.getItem("pinterest_token")) return;
     console.log("f");
     axios
-      .post("https://localhost:3000/auth/pinterest/exchange", { code }) // ← Replace with deployed backend URL
+      .post("https://collageio-backend.onrender.com/auth/pinterest/exchange", { code })
       .then((res) => {
         const token = res.data.access_token;
+        console.log(token);
         if (token) {
           localStorage.setItem("pinterest_token", token);
           alert("Pinterest login successful!");
