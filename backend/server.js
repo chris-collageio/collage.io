@@ -8,6 +8,9 @@ const app = express();
 app.use(cors({ origin: "https://collageio.web.app" }));
 app.use(express.json());
 
+
+const querystring = require("querystring"); // ✅ Built-in module
+
 app.post("/auth/pinterest/exchange", async (req, res) => {
   const { code } = req.body;
 
@@ -15,23 +18,26 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     return res.status(400).json({ error: "Missing authorization code" });
   }
 
-  const json = JSON.stringify(
-    {
-      grant_type: "authorization_code",
-      code: code,
-      client_id: process.env.PINTEREST_CLIENT_ID,
-      client_secret: process.env.PINTEREST_CLIENT_SECRET,
-      redirect_uri: process.env.PINTEREST_REDIRECT_URI,
-    }
-  );
+  const formData = querystring.stringify({
+    grant_type: "authorization_code",
+    code: code,
+    client_id: process.env.PINTEREST_CLIENT_ID,
+    client_secret: process.env.PINTEREST_CLIENT_SECRET,
+    redirect_uri: process.env.PINTEREST_REDIRECT_URI,
+  });
 
   try {
-    res = await axios.post("https://api.pinterest.com/v5/oauth/token", json, {
-      headers: {
-        'Authorization': 'Basic ' + btoa(process.env.PINTEREST_CLIENT_ID + ":" + process.env.PINTEREST_CLIENT_SECRET),
-        'Content-Type': 'application/x-www-form-urlencoded'
+    const response = await axios.post(
+      "https://api.pinterest.com/v5/oauth/token",
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       }
-    });
+    );
+
+    res.json({ access_token: response.data.access_token });
   } catch (err) {
     console.error("Pinterest token exchange failed:", err.response?.data || err.message);
     res.status(400).json({
@@ -39,8 +45,6 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
       details: err.response?.data || err.message,
     });
   }
-  res.json({ access_token: response.data.access_token });
-
 });
 
 const PORT = process.env.PORT || 3000;
