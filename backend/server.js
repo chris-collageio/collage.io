@@ -38,13 +38,7 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     data : data
   };
 
-  axios.request(config)
-  .then((response) => {
-    console.log(JSON.stringify(response.data));
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+  axios.request(config);;
 
   res.json({ access_token: response.data.access_token });
 
