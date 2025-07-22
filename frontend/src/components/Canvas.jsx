@@ -107,18 +107,15 @@ export default function Canvas() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log("Checking for Pinterest code in URL...")
-
     const params = new URLSearchParams(location.search);
     const code = params.get("code");
 
     if (!code || localStorage.getItem("pinterest_token")) return;
-    console.log("f");
+    console.log("code: " + code);
     axios
       .post("https://collage-io-backend.onrender.com/auth/pinterest/exchange", { code })
       .then((res) => {
         const token = res.data.access_token;
-        console.log(token);
         if (token) {
           localStorage.setItem("pinterest_token", token);
           alert("Pinterest login successful!");
