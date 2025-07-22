@@ -7,20 +7,24 @@ const app = express();
 app.use(cors({ origin: "https://collageio.web.app" }));
 app.use(express.json());
 
+
+const qs = require("querystring"); // ✅ Built-in
+
 app.post("/auth/pinterest/exchange", async (req, res) => {
   const { code } = req.body;
 
-  try {
-    const params = new URLSearchParams();
-    params.append("grant_type", "authorization_code");
-    params.append("code", code);
-    params.append("client_id", process.env.PINTEREST_CLIENT_ID);
-    params.append("client_secret", process.env.PINTEREST_CLIENT_SECRET);
-    params.append("redirect_uri", process.env.PINTEREST_REDIRECT_URI);
+  const data = qs.stringify({
+    grant_type: "authorization_code",
+    code,
+    client_id: process.env.PINTEREST_CLIENT_ID,
+    client_secret: process.env.PINTEREST_CLIENT_SECRET,
+    redirect_uri: process.env.PINTEREST_REDIRECT_URI,
+  });
 
+  try {
     const response = await axios.post(
       "https://api.pinterest.com/v5/oauth/token",
-      params.toString(),
+      data,
       {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
