@@ -14,12 +14,29 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
   if (!code) {
     return res.status(400).json({ error: "Missing authorization code" });
   }
-  console.log(code);
-  res.json({cod: code});
+
+  const json = JSON.stringify(
+    {
+      grant_type: "authorization_code",
+      code: code,
+      client_id: process.env.PINTEREST_CLIENT_ID,
+      client_secret: process.env.PINTEREST_CLIENT_SECRET,
+      redirect_uri: process.env.PINTEREST_REDIRECT_URI,
+    }
+  );
+
+  const res = await axios.post("https://api.pinterest.com/v5/oauth/token", json, {
+    headers: {
+      'Authorization': 'Basic ' + btoa(client_id + ":" + client_secret),
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+
+  res.json({ access_token: response.data.access_token });
 
   // const data = qs.stringify({
   //   grant_type: "authorization_code",
-  //   code,
+  //   code: code,
   //   client_id: process.env.PINTEREST_CLIENT_ID,
   //   client_secret: process.env.PINTEREST_CLIENT_SECRET,
   //   redirect_uri: process.env.PINTEREST_REDIRECT_URI,
