@@ -15,6 +15,7 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     return res.status(400).json({ error: "Missing authorization code" });
   }
   console.log(code);
+  res.json({cod: code});
 
   // const data = qs.stringify({
   //   grant_type: "authorization_code",
