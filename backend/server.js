@@ -25,7 +25,7 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     }
   );
 
-  const res = await axios.post("https://api.pinterest.com/v5/oauth/token", json, {
+  res = await axios.post("https://api.pinterest.com/v5/oauth/token", json, {
     headers: {
       'Authorization': 'Basic ' + btoa(client_id + ":" + client_secret),
       'Content-Type': 'application/x-www-form-urlencoded'
