@@ -126,9 +126,15 @@ export default function Canvas() {
         }
       })
       .catch((err) => {
-        console.error("Pinterest login error:", err.response?.data || err.message);
-        alert("Pinterest login failed.");
-      });
+      if (err.response) {
+        console.error("Pinterest login error:", err.response.data);
+        alert("Pinterest login failed: " + JSON.stringify(err.response.data));
+      } else {
+        console.error("Pinterest login error:", err.message);
+        alert("Pinterest login failed: " + err.message);
+      }
+    });
+
   }, [location.search, navigate]);
 
   // Handle movement, resizing, rotating
