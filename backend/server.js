@@ -1,17 +1,19 @@
-const axios = require("axios");
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
+const qs = require("querystring");
 require("dotenv").config();
 
 const app = express();
 app.use(cors({ origin: "https://collageio.web.app" }));
 app.use(express.json());
 
-
-const qs = require("querystring"); // ✅ Built-in
-
 app.post("/auth/pinterest/exchange", async (req, res) => {
   const { code } = req.body;
+
+  if (!code) {
+    return res.status(400).json({ error: "Missing authorization code" });
+  }
 
   const data = qs.stringify({
     grant_type: "authorization_code",
@@ -44,5 +46,5 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`✅ Backend running on port ${PORT}`);
+  console.log(`✅ Pinterest auth server running on port ${PORT}`);
 });
