@@ -1,15 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-const qs = require("querystring");
+const qs = require("qs");
 require("dotenv").config();
 
 const app = express();
 app.use(cors({ origin: "https://collageio.web.app" }));
 app.use(express.json());
-
-
-const querystring = require("querystring"); // ✅ Built-in module
 
 app.post("/auth/pinterest/exchange", async (req, res) => {
   const { code } = req.body;
@@ -18,34 +15,41 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     return res.status(400).json({ error: "Missing authorization code" });
   }
 
-  const formData = querystring.stringify({
-    grant_type: "authorization_code",
-    code: code,
-    client_id: process.env.PINTEREST_CLIENT_ID,
-    client_secret: process.env.PINTEREST_CLIENT_SECRET,
-    redirect_uri: process.env.PINTEREST_REDIRECT_URI,
+  let data = qs.stringify({
+    'client_id': process.env.PINTEREST_CLIENT_ID,
+    'client_secret': process.env.PINTEREST_CLIENT_SECRET,
+    'redirect_uri': process.env.PINTEREST_REDIRECT_URI,
+    'code': code,
+    'grant_type': 'authorization_code' 
   });
 
-  try {
-    const response = await axios.post(
-      "https://api.pinterest.com/v5/oauth/token",
-      formData,
-      {
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-      }
-    );
+  let config = {
+    method: 'post',
+    maxBodyLength: Infinity,
+    url: 'https://api.pinterest.com/v5/oauth/token?client_id=' + process.env.PINTEREST_CLIENT_ID
+      + '&client_secret=' + process.env.PINTEREST_CLIENT_ID 
+      + '&redirect_uri=https://collageio.web.app/&code=' + code 
+      + '&grant_type=authorization_code',
+    headers: { 
+      'Authorization': 'Basic' + btoa(process.env.PINTEREST_CLIENT_ID + ':' + process.env.PINTEREST_CLIENT_SECRET), 
+      'Content-Type': 'application/x-www-form-urlencoded', 
+      'Cookie': '_ir=0'
+    },
+    data : data
+  };
 
-    res.json({ access_token: response.data.access_token });
-  } catch (err) {
-    console.error("Pinterest token exchange failed:", err.response?.data || err.message);
-    res.status(400).json({
-      error: "Token exchange failed",
-      details: err.response?.data || err.message,
-    });
-  }
+  axios.request(config)
+  .then((response) => {
+    console.log(JSON.stringify(response.data));
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+
+  res.json({ access_token: response.data.access_token });
+
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
