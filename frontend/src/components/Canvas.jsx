@@ -111,7 +111,6 @@ export default function Canvas() {
     const code = params.get("code");
 
     if (!code || localStorage.getItem("pinterest_token")) return;
-    console.log("code: " + code);
     axios
       .post("https://collage-io-backend.onrender.com/auth/pinterest/exchange", { code })
       .then((res) => {

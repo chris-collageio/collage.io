@@ -25,63 +25,23 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     }
   );
 
-  res = await axios.post("https://api.pinterest.com/v5/oauth/token", json, {
-    headers: {
-      'Authorization': 'Basic ' + btoa(client_id + ":" + client_secret),
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  });
-
+  try {
+    res = await axios.post("https://api.pinterest.com/v5/oauth/token", json, {
+      headers: {
+        'Authorization': 'Basic ' + btoa(process.env.PINTEREST_CLIENT_ID + ":" + process.env.PINTEREST_CLIENT_SECRET),
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    });
+  } catch (err) {
+    console.error("Pinterest token exchange failed:", err.response?.data || err.message);
+    res.status(400).json({
+      error: "Token exchange failed",
+      details: err.response?.data || err.message,
+    });
+  }
   res.json({ access_token: response.data.access_token });
 
-  // const data = qs.stringify({
-  //   grant_type: "authorization_code",
-  //   code: code,
-  //   client_id: process.env.PINTEREST_CLIENT_ID,
-  //   client_secret: process.env.PINTEREST_CLIENT_SECRET,
-  //   redirect_uri: process.env.PINTEREST_REDIRECT_URI,
-  // });
-
-  // try {
-  //   const response = await axios.post(
-  //     "https://api.pinterest.com/v5/oauth/token",
-  //     data,
-  //     {
-  //       headers: {
-  //         "Content-Type": "application/x-www-form-urlencoded",
-  //       },
-  //     }
-  //   );
-
-  //   res.json({ access_token: response.data.access_token });
-  // } catch (err) {
-  //   console.error("Pinterest token exchange failed:", err.response?.data || err.message);
-  //   res.status(400).json({
-  //     error: "Token exchange failed",
-  //     details: err.response?.data || err.message,
-  //   });
-  // }
 });
-
-
-// fetch('https://api.pinterest.com/v5/oauth/token', {
-//   method: "POST",
-//   headers: {
-//     // Customize request header here
-//     "Content-Type": "application/json",
-//   },
-//   body: JSON.stringify({
-//     foo: "bar",
-//     bar: "foo",
-//   }),
-// })
-// .then((res) => res.json())
-// .then((data) => {
-//   console.log("Response data:", data);
-// })
-// .catch((err) => {
-//   console.log("Unable to fetch -", err);
-// });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
