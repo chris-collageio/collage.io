@@ -5,7 +5,7 @@ const qs = require("qs");
 require("dotenv").config();
 
 const app = express();
-app.use(cors({ origin: "https://collageio.web.app" }));
+app.use(cors({ origin: process.env.PINTEREST_REDIRECT_URI }));
 app.use(express.json());
 
 app.post("/auth/pinterest/exchange", async (req, res) => {
@@ -16,9 +16,9 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
   }
 
   let data = qs.stringify({
-    'client_id': '1525277',
-    'client_secret': 'dd1fff7697f7afc6cef9d121c5ea8055b13b5245',
-    'redirect_uri': 'https://collageio.web.app/',
+    'client_id': process.env.PINTEREST_CLIENT_ID,
+    'client_secret': process.env.PINTEREST_CLIENT_SECRET,
+    'redirect_uri': process.env.PINTEREST_REDIRECT_URI,
     'code': code,
     'grant_type': 'authorization_code' 
   });
@@ -26,9 +26,13 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'https://api.pinterest.com/v5/oauth/token?client_id=1525277&client_secret=dd1fff7697f7afc6cef9d121c5ea8055b13b5245&redirect_uri=https://collageio.web.app/&code=' + code + '&grant_type=authorization_code',
+    url: 'https://api.pinterest.com/v5/oauth/token?client_id=' + process.env.PINTEREST_CLIENT_ID 
+    + '&client_secret=' + process.env.PINTEREST_CLIENT_SECRET
+    + '&redirect_uri=' + process.env.PINTEREST_REDIRECT_URI 
+    + 'https://collageio.web.app/&code=' + code 
+    + '&grant_type=authorization_code',
     headers: { 
-      'Authorization': 'Basic MTUyNTI3NzpkZDFmZmY3Njk3ZjdhZmM2Y2VmOWQxMjFjNWVhODA1NWIxM2I1MjQ1', 
+      'Authorization': "Basic " + btoa(PINTEREST_CLIENT_ID + ":" + PINTEREST_CLIENT_SECRET), 
       'Content-Type': 'application/x-www-form-urlencoded', 
       'Cookie': '_ir=0'
     },
@@ -37,45 +41,12 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
 
   axios.request(config)
   .then((response) => {
-    res.json({ access_token: response.data.access_token });
+    res.json({ access_token: response.data.access_token, refresh_token: response.data.refresh_token });
     console.log(JSON.stringify(response.data));
   })
   .catch((error) => {
     console.log(error);
-  });
-
-
-  // let data = qs.stringify({
-  //   'client_id': process.env.PINTEREST_CLIENT_ID,
-  //   'client_secret': process.env.PINTEREST_CLIENT_SECRET,
-  //   'redirect_uri': process.env.PINTEREST_REDIRECT_URI,
-  //   'code': code,
-  //   'grant_type': 'authorization_code' 
-  // });
-
-  // let config = {
-  //   method: 'post',
-  //   maxBodyLength: Infinity,
-  //   url: 'https://api.pinterest.com/v5/oauth/token?client_id=' + process.env.PINTEREST_CLIENT_ID
-  //     + '&client_secret=' + process.env.PINTEREST_CLIENT_ID 
-  //     + '&redirect_uri=https://collageio.web.app/&code=' + code 
-  //     + '&grant_type=authorization_code',
-  //   headers: { 
-  //     'Authorization': 'Basic' + btoa(process.env.PINTEREST_CLIENT_ID + ':' + process.env.PINTEREST_CLIENT_SECRET), 
-  //     'Content-Type': 'application/x-www-form-urlencoded', 
-  //     'Cookie': '_ir=0'
-  //   },
-  //   data : data
-  // };
-
-  // axios.request(config)
-  // .then((response) => {
-  //   console.log(JSON.stringify(response.data));
-  // })
-  // .catch((error) => {
-  //   console.log(error);
-  // });
-
+  });  
 });
 
 

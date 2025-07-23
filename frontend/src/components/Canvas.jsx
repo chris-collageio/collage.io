@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, use } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Plus, RotateCw, Trash2, ZoomIn, ZoomOut } from 'lucide-react';
 import PinterestLogin from './PinterestLogin';
+import AddImagesFromPinterest from './AddImagesFromPinterest';
 import axios from "axios";
 
 export default function Canvas() {
@@ -13,6 +14,7 @@ export default function Canvas() {
   const [activeRotate, setActiveRotate] = useState(null);
   const [history, setHistory] = useState([]);
   const [future, setFuture] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
 
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -111,13 +113,17 @@ export default function Canvas() {
     const code = params.get("code");
 
     if (!code || localStorage.getItem("pinterest_token")) return;
+
     axios
       .post("https://collage-io-backend.onrender.com/auth/pinterest/exchange", { code })
       .then((res) => {
         const token = res.data.access_token;
         if (token) {
-          localStorage.setItem("pinterest_token", token);
           alert("Pinterest login successful!");
+          localStorage.setItem("pinterest_token", token);
+          setIsConnected(true);
+          dispatchEvent(new Event("storage"));
+          console.log("Pinterest token set:", token);
           // Remove ?code from the URL
           navigate("/", { replace: true });
         } else {
@@ -135,6 +141,14 @@ export default function Canvas() {
     });
 
   }, [location.search, navigate]);
+
+  useEffect(() => {
+    window.addEventListener("storage", () => {
+      const token = localStorage.getItem("pinterest_token");
+      console.log(token, " , ", !!token);
+      setIsConnected(!!token); 
+    })
+  }, []);
 
   // Handle movement, resizing, rotating
   useEffect(() => {
@@ -316,8 +330,8 @@ export default function Canvas() {
   return (
     <>
       <div>
-        <PinterestLogin />
-
+        {!isConnected ? <PinterestLogin /> : <AddImagesFromPinterest token={token}/> }
+        
         <div className="buttons-container">
           <button
             onClick={() => fileInputRef.current?.click()}
