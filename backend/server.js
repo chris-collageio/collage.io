@@ -26,11 +26,12 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'https://api.pinterest.com/v5/oauth/token?client_id=' + process.env.PINTEREST_CLIENT_ID 
-    + '&client_secret=' + process.env.PINTEREST_CLIENT_SECRET
-    + '&redirect_uri=' + process.env.PINTEREST_REDIRECT_URI 
-    + 'https://collageio.web.app/&code=' + code 
-    + '&grant_type=authorization_code',
+    // url: 'https://api.pinterest.com/v5/oauth/token?client_id=' + process.env.PINTEREST_CLIENT_ID 
+    // + '&client_secret=' + process.env.PINTEREST_CLIENT_SECRET
+    // + '&redirect_uri=' + process.env.PINTEREST_REDIRECT_URI 
+    // + 'https://collageio.web.app/&code=' + code 
+    // + '&grant_type=authorization_code',
+    url: 'https://api.pinterest.com/v5/oauth/token?client_id=1525277&client_secret=dd1fff7697f7afc6cef9d121c5ea8055b13b5245&redirect_uri=https://collageio.web.app/&code=' + code + '&grant_type=authorization_code',
     headers: { 
       'Authorization': "Basic " + btoa(PINTEREST_CLIENT_ID + ":" + PINTEREST_CLIENT_SECRET), 
       'Content-Type': 'application/x-www-form-urlencoded', 
