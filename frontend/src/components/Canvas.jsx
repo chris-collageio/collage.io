@@ -330,7 +330,7 @@ export default function Canvas() {
   return (
     <>
       <div>
-        {!isConnected ? <PinterestLogin /> : <AddImagesFromPinterest token={token}/> }
+        {!isConnected ? <PinterestLogin /> : <AddImagesFromPinterest/> }
         
         <div className="buttons-container">
           <button
