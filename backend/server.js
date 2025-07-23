@@ -28,7 +28,7 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
   let config = {
     method: 'post',
     maxBodyLength: Infinity,
-    url: 'https://api.pinterest.com/v5/oauth/token?client_id=1525277&client_secret=dd1fff7697f7afc6cef9d121c5ea8055b13b5245&redirect_uri=https://collageio.web.app/&code=544064a5acafceb3fb897e642ebb4b6837f56655&grant_type=authorization_code',
+    url: 'https://api.pinterest.com/v5/oauth/token?client_id=1525277&client_secret=dd1fff7697f7afc6cef9d121c5ea8055b13b5245&redirect_uri=https://collageio.web.app/&code=' + code + '&grant_type=authorization_code',
     headers: { 
       'Authorization': 'Basic MTUyNTI3NzpkZDFmZmY3Njk3ZjdhZmM2Y2VmOWQxMjFjNWVhODA1NWIxM2I1MjQ1', 
       'Content-Type': 'application/x-www-form-urlencoded', 
