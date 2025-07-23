@@ -37,6 +37,7 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
 
   axios.request(config)
   .then((response) => {
+    res.json({ access_token: response.data.access_token });
     console.log(JSON.stringify(response.data));
   })
   .catch((error) => {
@@ -74,8 +75,6 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
   // .catch((error) => {
   //   console.log(error);
   // });
-
-  res.json({ access_token: response.data.access_token });
 
 });
 
