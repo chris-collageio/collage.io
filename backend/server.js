@@ -15,13 +15,11 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     return res.status(400).json({ error: "Missing authorization code" });
   }
 
-  const axios = require('axios');
-  const qs = require('qs');
   let data = qs.stringify({
     'client_id': '1525277',
     'client_secret': 'dd1fff7697f7afc6cef9d121c5ea8055b13b5245',
     'redirect_uri': 'https://collageio.web.app/',
-    'code': '544064a5acafceb3fb897e642ebb4b6837f56655',
+    'code': code,
     'grant_type': 'authorization_code' 
   });
 
