@@ -32,7 +32,7 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
     + 'https://collageio.web.app/&code=' + code 
     + '&grant_type=authorization_code',
     headers: { 
-      'Authorization': "Basic " + btoa(PINTEREST_CLIENT_ID + ":" + PINTEREST_CLIENT_SECRET), 
+      'Authorization': "Basic " + btoa( process.env.PINTEREST_CLIENT_ID  + ":" +  process.env.PINTEREST_CLIENT_SECRET ), 
       'Content-Type': 'application/x-www-form-urlencoded', 
       'Cookie': '_ir=0'
     },
