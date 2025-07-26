@@ -112,12 +112,13 @@ export default function Canvas() {
     const params = new URLSearchParams(location.search);
     const code = params.get("code");
 
-    if (!code || localStorage.getItem("pinterest_token")) return;
-
+    if (!code) return;
+    console.log("here");
     axios
       .post("https://collage-io-backend.onrender.com/auth/pinterest/exchange", { code })
       .then((res) => {
         const token = res.data.access_token;
+        console.log("Received token:", token);
         if (token) {
           alert("Pinterest login successful!");
           localStorage.setItem("pinterest_token", token);
