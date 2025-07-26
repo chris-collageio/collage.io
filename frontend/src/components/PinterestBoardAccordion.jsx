@@ -94,3 +94,5 @@ function PinterestBoardAccordion({ boards, onAddSelected }) {
     </div>
   );
 }
+
+export default PinterestBoardAccordion;

@@ -51,6 +51,37 @@ app.post("/auth/pinterest/exchange", async (req, res) => {
 });
 
 
+app.get("/auth/pinterest/boards", async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ error: "Missing access token" });
+  }
+
+  let config = {
+    method: 'get',
+    maxBodyLength: Infinity,
+    url: 'https://api.pinterest.com/v5/boards/',
+    headers: { 
+      'Authorization': 'Bearer ' + token, 
+      'Cookie': '_ir=0'
+    }
+  };
+
+  axios.request(config)
+  .then((response) => {
+    res.json(response.data);
+  })
+  .catch((error) => {
+    console.log(error);
+    res.status(500).json({ error: "Failed to fetch boards" });
+  });
+});
+
+// app.get("/auth/pinterest/pins", async (req, res) => {
+// });
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`✅ Pinterest auth server running on port ${PORT}`);

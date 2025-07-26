@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Plus, RotateCw, Trash2, ZoomIn, ZoomOut } from 'lucide-react';
 import PinterestLogin from './PinterestLogin';
 import AddImagesFromPinterest from './AddImagesFromPinterest';
+import PinterestBoardAccordion from './PinterestBoardAccordion';
 import axios from "axios";
 
 export default function Canvas() {
@@ -15,6 +16,7 @@ export default function Canvas() {
   const [history, setHistory] = useState([]);
   const [future, setFuture] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
+  const [boards, setBoards] = useState([]);
 
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
@@ -113,7 +115,7 @@ export default function Canvas() {
     const code = params.get("code");
 
     if (!code) return;
-    console.log("here");
+    console.log("Pinterest auth code:", code);
     axios
       .post("https://collage-io-backend.onrender.com/auth/pinterest/exchange", { code })
       .then((res) => {
@@ -125,6 +127,7 @@ export default function Canvas() {
           setIsConnected(true);
           dispatchEvent(new Event("storage"));
           console.log("Pinterest token set:", token);
+
           // Remove ?code from the URL
           navigate("/", { replace: true });
         } else {
@@ -141,12 +144,20 @@ export default function Canvas() {
       }
     });
 
+    // Fetch boards after login
+    axios
+      .post("https://collage-io-backend.onrender.com/auth/pinterest/boards", { token })
+      .then((res) => {
+        console.log("Fetched boards:", res.data);
+        setBoards(res.data);
+      })
+      .catch();
+
   }, [location.search, navigate]);
 
   useEffect(() => {
     window.addEventListener("storage", () => {
       const token = localStorage.getItem("pinterest_token");
-      console.log(token, " , ", !!token);
       setIsConnected(!!token); 
     })
   }, []);
@@ -332,7 +343,8 @@ export default function Canvas() {
     <>
       <div>
         {!isConnected ? <PinterestLogin /> : <AddImagesFromPinterest/> }
-        
+        {/* <PinterestBoardAccordion boards={} /> */}
+
         <div className="buttons-container">
           <button
             onClick={() => fileInputRef.current?.click()}
